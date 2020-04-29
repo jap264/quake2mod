@@ -1,22 +1,3 @@
-/*
-Copyright (C) 1997-2001 Id Software, Inc.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
 // g_local.h -- local definitions for game module
 
 #include "q_shared.h"
@@ -27,8 +8,10 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
 #define	GAME_INCLUDE
 #include "game.h"
 
+//SKULL
 // the "gameversion" client command will print this plus compile date
-#define	GAMEVERSION	"baseq2"
+#define GAMEVERSION     "thirdperson"
+//END
 
 // protocol bytes that can be directly added to messages
 #define	svc_muzzleflash		1
@@ -522,6 +505,7 @@ extern	cvar_t	*fraglimit;
 extern	cvar_t	*timelimit;
 extern	cvar_t	*password;
 extern	cvar_t	*spectator_password;
+extern	cvar_t	*needpass;
 extern	cvar_t	*g_select_empty;
 extern	cvar_t	*dedicated;
 
@@ -862,6 +846,9 @@ typedef struct
 	int			helpchanged;
 
 	qboolean	spectator;			// client is a spectator
+        //SKULL
+        int             chasetoggle;                    //Chasetoggle
+        //END
 } client_persistant_t;
 
 // client data that stays across deathmatch respawns
@@ -959,6 +946,13 @@ struct gclient_s
 
 	edict_t		*chase_target;		// player we are chasing
 	qboolean	update_chase;		// need to update chase info?
+        //SKULL
+        int             chasetoggle;
+        edict_t         *chasecam;
+        edict_t         *oldplayer;
+        int             use;
+        int             zoom;
+        //END
 };
 
 
@@ -1109,5 +1103,23 @@ struct edict_s
 	// common data blocks
 	moveinfo_t		moveinfo;
 	monsterinfo_t	monsterinfo;
+        //SKULL
+        int     chasedist1;
+        int     chasedist2;
+        edict_t *crosshair;
+        //END
 };
 
+//SKULL
+extern  cvar_t  *tpp;
+extern  cvar_t  *crossh;
+extern void CheckChasecam_Viewent (edict_t *ent);
+extern void Cmd_Chasecam_Toggle (edict_t *ent);
+extern void ChasecamRemove (edict_t *ent, char *opt);
+extern void ChasecamStart (edict_t *ent);
+extern void Cmd_ToggleHud ();
+extern char *single_statusbar;
+extern void MakeFakeCrosshair (edict_t *ent);
+extern void UpdateFakeCrosshair (edict_t *ent);
+extern void DestroyFakeCrosshair (edict_t *ent);
+//END

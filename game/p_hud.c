@@ -1,22 +1,3 @@
-/*
-Copyright (C) 1997-2001 Id Software, Inc.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
 #include "g_local.h"
 
 
@@ -86,6 +67,10 @@ void BeginIntermission (edict_t *targ)
 		client = g_edicts + 1 + i;
 		if (!client->inuse)
 			continue;
+//yerrr
+                //Save it off over level changes
+                client->client->pers.chasetoggle = client->client->chasetoggle;
+//end
 		if (client->health <= 0)
 			respawn(client);
 	}
@@ -513,8 +498,12 @@ void G_SetStats (edict_t *ent)
 	//
 	if (ent->client->pers.helpchanged && (level.framenum&8) )
 		ent->client->ps.stats[STAT_HELPICON] = gi.imageindex ("i_help");
-	else if ( (ent->client->pers.hand == CENTER_HANDED || ent->client->ps.fov > 91)
-		&& ent->client->pers.weapon)
+        else if ( (ent->client->pers.hand == CENTER_HANDED || ent->client->ps.fov > 91
+                //yerrr
+                /* Display the current weapon if chase is on */
+                || (ent->client->chasetoggle)
+                //end
+                ) && ent->client->pers.weapon)
 		ent->client->ps.stats[STAT_HELPICON] = gi.imageindex (ent->client->pers.weapon->icon);
 	else
 		ent->client->ps.stats[STAT_HELPICON] = 0;

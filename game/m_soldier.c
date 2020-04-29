@@ -1,23 +1,4 @@
 /*
-Copyright (C) 1997-2001 Id Software, Inc.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
-/*
 ==============================================================================
 
 SOLDIER
@@ -881,6 +862,7 @@ void soldier_fire7 (edict_t *self)
 	soldier_fire (self, 6);
 }
 
+//yerrr
 void soldier_dead (edict_t *self)
 {
 	VectorSet (self->mins, -16, -16, -24);
@@ -1192,7 +1174,7 @@ void soldier_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		self->monsterinfo.currentmove = &soldier_move_death6;
 }
 
-
+//yerrr
 //
 // SPAWN
 //

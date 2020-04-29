@@ -1,22 +1,3 @@
-/*
-Copyright (C) 1997-2001 Id Software, Inc.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
 
 #include "g_local.h"
 #include "m_player.h"
@@ -321,20 +302,37 @@ void SV_CalcViewOffset (edict_t *ent)
 	// absolutely bound offsets
 	// so the view can never be outside the player box
 
-	if (v[0] < -14)
-		v[0] = -14;
-	else if (v[0] > 14)
-		v[0] = 14;
-	if (v[1] < -14)
-		v[1] = -14;
-	else if (v[1] > 14)
-		v[1] = 14;
-	if (v[2] < -22)
-		v[2] = -22;
-	else if (v[2] > 30)
-		v[2] = 30;
+//yerrr
+        if (!ent->client->chasetoggle)
+        {
+	        if (v[0] < -14)
+                 	v[0] = -14;
+                else if (v[0] > 14)
+                        v[0] = 14;
+                if (v[1] < -14)
+                        v[1] = -14;
+                else if (v[1] > 14)
+                        v[1] = 14;
+                if (v[2] < -22)
+                        v[2] = -22;
+                else if (v[2] > 30)
+                        v[2] = 30;
+        }
+        else
+        { 
+               VectorSet (v, 0, 0, 0);
+               if (ent->client->chasecam != NULL)
+               {
+	               ent->client->ps.pmove.origin[0] = ent->client->chasecam->s.origin[0]*8;
+                       ent->client->ps.pmove.origin[1] = ent->client->chasecam->s.origin[1]*8;
+                       ent->client->ps.pmove.origin[2] = ent->client->chasecam->s.origin[2]*8;
+                       //This stops demos working!
+                       //VectorCopy (ent->client->chasecam->s.angles, ent->client->ps.viewangles);
+                }
+        }
+//end
 
-	VectorCopy (v, ent->client->ps.viewoffset);
+        VectorCopy (v, ent->client->ps.viewoffset);
 }
 
 /*
@@ -1083,5 +1081,10 @@ void ClientEndServerFrame (edict_t *ent)
 		DeathmatchScoreboardMessage (ent, ent->enemy);
 		gi.unicast (ent, false);
 	}
+
+//SKULL
+        if (ent->client->chasetoggle == 1)
+                CheckChasecam_Viewent(ent);
+//END
 }
 

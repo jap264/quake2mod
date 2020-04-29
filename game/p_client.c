@@ -1,22 +1,3 @@
-/*
-Copyright (C) 1997-2001 Id Software, Inc.
-
-This program is free software; you can redistribute it and/or
-modify it under the terms of the GNU General Public License
-as published by the Free Software Foundation; either version 2
-of the License, or (at your option) any later version.
-
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  
-
-See the GNU General Public License for more details.
-
-You should have received a copy of the GNU General Public License
-along with this program; if not, write to the Free Software
-Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
-
-*/
 #include "g_local.h"
 #include "m_player.h"
 
@@ -502,6 +483,16 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 {
 	int		n;
 
+        //yerrr
+        if (self->client->chasetoggle)
+        {
+                ChasecamRemove (self, "off");
+                self->client->pers.chasetoggle = 1; //So we can turn it back on
+        }
+        else
+                self->client->pers.chasetoggle = 0; //So we can turn it back on
+        //end
+
 	VectorClear (self->avelocity);
 
 	self->takedamage = DAMAGE_YES;
@@ -627,6 +618,10 @@ void InitClientPersistant (gclient_t *client)
 	client->pers.max_slugs		= 50;
 
 	client->pers.connected = true;
+//yerrr
+        //Default chasecam to on
+        client->pers.chasetoggle = 1;
+//end
 }
 
 
@@ -657,6 +652,9 @@ void SaveClientData (void)
 		ent = &g_edicts[1+i];
 		if (!ent->inuse)
 			continue;
+                //yerrr
+                game.clients[i].pers.chasetoggle = ent->client->chasetoggle;
+                //end
 		game.clients[i].pers.health = ent->health;
 		game.clients[i].pers.max_health = ent->max_health;
 		game.clients[i].pers.savedFlags = (ent->flags & (FL_GODMODE|FL_NOTARGET|FL_POWER_ARMOR));
@@ -979,6 +977,12 @@ void CopyToBodyQue (edict_t *ent)
 
 void respawn (edict_t *self)
 {
+        //yerrr
+        if (self->client->oldplayer)
+                G_FreeEdict (self->client->oldplayer);
+        if (self->client->chasecam)
+                G_FreeEdict (self->client->chasecam);
+        //end
 	if (deathmatch->value || coop->value)
 	{
 		// spectator's don't leave bodies
@@ -1041,6 +1045,15 @@ void spectator_respawn (edict_t *ent)
 			gi.unicast(ent, true);
 			return;
 		}
+                //yerrr
+                if (ent->client->chasetoggle)
+                {
+                        ChasecamRemove (ent, "off");
+                        ent->client->pers.chasetoggle = 1;
+                }
+                else
+                        ent->client->pers.chasetoggle = 0;
+                //end
 	} else {
 		// he was a spectator and wants to join the game
 		// he must have the right password
@@ -1056,8 +1069,8 @@ void spectator_respawn (edict_t *ent)
 		}
 	}
 
-	// clear score on respawn
-	ent->client->pers.score = ent->client->resp.score = 0;
+	// clear client on respawn
+	ent->client->resp.score = ent->client->pers.score = 0;
 
 	ent->svflags &= ~SVF_NOCLIENT;
 	PutClientInServer (ent);
@@ -1102,6 +1115,10 @@ void PutClientInServer (edict_t *ent)
 	vec3_t	spawn_origin, spawn_angles;
 	gclient_t	*client;
 	int		i;
+        //yerrr
+        int     chasetoggle;
+        char            userinfo[MAX_INFO_STRING];
+        //end
 	client_persistant_t	saved;
 	client_respawn_t	resp;
 
@@ -1112,12 +1129,13 @@ void PutClientInServer (edict_t *ent)
 
 	index = ent-g_edicts-1;
 	client = ent->client;
+        //yerrr
+        chasetoggle = client->pers.chasetoggle;
+        //end
 
 	// deathmatch wipes most client data every spawn
 	if (deathmatch->value)
 	{
-		char		userinfo[MAX_INFO_STRING];
-
 		resp = client->resp;
 		memcpy (userinfo, client->pers.userinfo, sizeof(userinfo));
 		InitClientPersistant (client);
@@ -1126,7 +1144,6 @@ void PutClientInServer (edict_t *ent)
 	else if (coop->value)
 	{
 //		int			n;
-		char		userinfo[MAX_INFO_STRING];
 
 		resp = client->resp;
 		memcpy (userinfo, client->pers.userinfo, sizeof(userinfo));
@@ -1146,6 +1163,11 @@ void PutClientInServer (edict_t *ent)
 	else
 	{
 		memset (&resp, 0, sizeof(resp));
+//yerrr
+//A bug in Q2 that you couldn't see without thirdpp
+		memcpy (userinfo, client->pers.userinfo, sizeof(userinfo));
+		ClientUserinfoChanged (ent, userinfo);
+//end
 	}
 
 	// clear everything but the persistant data
@@ -1155,6 +1177,9 @@ void PutClientInServer (edict_t *ent)
 	if (client->pers.health <= 0)
 		InitClientPersistant(client);
 	client->resp = resp;
+        //yerrr
+        client->pers.chasetoggle = chasetoggle;
+        //end
 
 	// copy some data from the client to the entity
 	FetchClientEntData (ent);
@@ -1179,6 +1204,11 @@ void PutClientInServer (edict_t *ent)
 	ent->watertype = 0;
 	ent->flags &= ~FL_NO_KNOCKBACK;
 	ent->svflags &= ~SVF_DEADMONSTER;
+        //yerrr
+        ent->svflags &= ~SVF_NOCLIENT;
+        //Turn on prediction
+        ent->client->ps.pmove.pm_flags &= ~PMF_NO_PREDICTION;
+        //end
 
 	VectorCopy (mins, ent->mins);
 	VectorCopy (maxs, ent->maxs);
@@ -1221,7 +1251,9 @@ void PutClientInServer (edict_t *ent)
 
 	// set the delta angle
 	for (i=0 ; i<3 ; i++)
+	{
 		client->ps.pmove.delta_angles[i] = ANGLE2SHORT(spawn_angles[i] - client->resp.cmd_angles[i]);
+	}
 
 	ent->s.angles[PITCH] = 0;
 	ent->s.angles[YAW] = spawn_angles[YAW];
@@ -1250,6 +1282,13 @@ void PutClientInServer (edict_t *ent)
 
 	gi.linkentity (ent);
 
+        //yerrr
+        ent->client->chasetoggle = 0;
+        //If chasetoggle set then turn on
+        if (ent->client->pers.chasetoggle)
+                ChasecamStart (ent);
+        //end                
+
 	// force the current weapon up
 	client->newweapon = client->pers.weapon;
 	ChangeWeapon (ent);
@@ -1272,13 +1311,24 @@ void ClientBeginDeathmatch (edict_t *ent)
 	// locate ent at a spawn point
 	PutClientInServer (ent);
 
-	// send effect
-	gi.WriteByte (svc_muzzleflash);
-	gi.WriteShort (ent-g_edicts);
-	gi.WriteByte (MZ_LOGIN);
-	gi.multicast (ent->s.origin, MULTICAST_PVS);
+	if (level.intermissiontime)
+	{
+		MoveClientToIntermission (ent);
+	}
+	else
+	{
+		// send effect
+		gi.WriteByte (svc_muzzleflash);
+		gi.WriteShort (ent-g_edicts);
+		gi.WriteByte (MZ_LOGIN);
+		gi.multicast (ent->s.origin, MULTICAST_PVS);
+	}
 
 	gi.bprintf (PRINT_HIGH, "%s entered the game\n", ent->client->pers.netname);
+
+        //yerrr
+        gi.centerprintf(ent, "SPINE DESIGN\nThird Person Perspective\nType 'thirdperson' at console to toggle.");
+        //end
 
 	// make sure all view stuff is valid
 	ClientEndServerFrame (ent);
@@ -1298,7 +1348,6 @@ void ClientBegin (edict_t *ent)
 	int		i;
 
 	ent->client = game.clients + (ent - g_edicts - 1);
-
 	if (deathmatch->value)
 	{
 		ClientBeginDeathmatch (ent);
@@ -1489,6 +1538,7 @@ qboolean ClientConnect (edict_t *ent, char *userinfo)
 	if (game.maxclients > 1)
 		gi.dprintf ("%s connected\n", ent->client->pers.netname);
 
+	ent->svflags = 0; // make sure we start with known default
 	ent->client->pers.connected = true;
 	return true;
 }
@@ -1507,6 +1557,11 @@ void ClientDisconnect (edict_t *ent)
 
 	if (!ent->client)
 		return;
+
+        //yerrr
+        if (ent->client->chasetoggle)
+                ChasecamRemove (ent, "off");
+        //end
 
 	gi.bprintf (PRINT_HIGH, "%s disconnected\n", ent->client->pers.netname);
 
@@ -1579,6 +1634,10 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 	if (level.intermissiontime)
 	{
+                //yerrr
+                if (client->chasetoggle)
+                        ChasecamRemove (ent, "off");
+                //end
 		client->ps.pmove.pm_type = PM_FREEZE;
 		// can exit intermission after five seconds
 		if (level.time > level.intermissiontime + 5.0 
@@ -1586,6 +1645,38 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 			level.exitintermission = true;
 		return;
 	}
+
+//yerrr
+        if (client->chasetoggle)
+                ent->client->ps.pmove.pm_flags |= PMF_NO_PREDICTION;
+        else
+                ent->client->ps.pmove.pm_flags &= ~PMF_NO_PREDICTION;
+
+        //+use now does the cool look around stuff but only in SP games
+        if ((ucmd->buttons & BUTTON_USE) && (!deathmatch->value))
+        {
+                client->use = 1;
+                if ((ucmd->forwardmove < 0) && (client->zoom < 60))
+                        client->zoom++;
+                else if ((ucmd->forwardmove > 0) && (client->zoom > -40))
+                        client->zoom--;
+                ucmd->forwardmove = 0;
+                ucmd->sidemove = 0;
+        }
+        else if (client->use)
+        {
+                //client->zoom = 0;
+                if (client->oldplayer)
+                {
+                // set angles
+                for (i=0 ; i<3 ; i++)
+                {
+                        ent->client->ps.pmove.delta_angles[i] = ANGLE2SHORT(ent->client->oldplayer->s.angles[i] - ent->client->resp.cmd_angles[i]);
+                }
+                }
+                client->use = 0;
+        }
+//end
 
 	pm_passent = ent;
 
