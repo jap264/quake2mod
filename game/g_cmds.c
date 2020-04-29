@@ -968,9 +968,9 @@ void ClientCommand (edict_t *ent)
 	else if (Q_stricmp(cmd, "playerlist") == 0)
 		Cmd_PlayerList_f(ent);
         //yerrr
-        else if (Q_stricmp (cmd, "thirdperson") == 0)
+        else if (Q_stricmp (cmd, "thirdperson") == 0) //cmd for 3rd person toggle
                 Cmd_Chasecam_Toggle (ent);
-        else if (Q_stricmp (cmd, "hud") == 0)
+        else if (Q_stricmp (cmd, "hud") == 0) //cmd for hud toggle
                 Cmd_ToggleHud (ent);
         //end
 	else	// anything that doesn't match a command will be a chat
