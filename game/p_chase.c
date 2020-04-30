@@ -1,7 +1,6 @@
 #include "g_local.h"
 
 cvar_t *tpp;
-cvar_t *crossh;
 
 void ChasecamTrack (edict_t *ent);
 
@@ -46,7 +45,7 @@ void ChasecamStart (edict_t *ent)
         chasecam->prethink = ChasecamTrack;
 	ent->client->chasecam = chasecam;     
         ent->client->oldplayer = G_Spawn();        
-        MakeFakeCrosshair(ent);
+
 }
 
 /* ent = chasecam */
@@ -90,8 +89,6 @@ void ChasecamRemove (edict_t *ent, char *opt)
          * that mimics us while in chasecam mode */
         ent->s.modelindex = ent->client->oldplayer->s.modelindex;
         ent->svflags &= ~SVF_NOCLIENT;
-
-        DestroyFakeCrosshair (ent);
 
         if (!strcmp(opt, "background"))
         {
@@ -274,7 +271,6 @@ void ChasecamTrack (edict_t *ent)
         VectorCopy (ent->s.origin, ent->movedir);
         /* MUST LINK SINCE WE CHANGED THE ORIGIN! */
         gi.linkentity (ent);
-        UpdateFakeCrosshair (ent->owner);
 }
 
 void Cmd_Chasecam_Toggle (edict_t *ent)
@@ -342,42 +338,4 @@ static void P_ProjectSource (gclient_t *client, vec3_t point, vec3_t distance, v
 	else if (client->pers.hand == CENTER_HANDED)
 		_distance[1] = 0;
 	G_ProjectSource (point, _distance, forward, right, result);
-}
-
-void UpdateFakeCrosshair (edict_t *ent)
-{
-        vec3_t offset,spot,forward,right,start;
-        trace_t tr;
-        if (!ent->crosshair)
-                return;
-	VectorSet(offset, 8, 8, ent->viewheight-8);
-        if (ent->client->use)
-                AngleVectors (ent->client->oldplayer->s.angles, forward, right, NULL);
-        else
-                AngleVectors (ent->client->v_angle, forward, right, NULL);
-	VectorNormalize(forward);
-	P_ProjectSource (ent->client, ent->s.origin, offset, forward, right, start);
-        VectorMA (start, 8192, forward, spot);
-        tr = gi.trace (start, vec3_origin, vec3_origin, spot, ent, MASK_PLAYERSOLID);
-        VectorCopy (tr.endpos, ent->crosshair->s.origin);
-        gi.linkentity (ent->crosshair);
-}
-
-void MakeFakeCrosshair (edict_t *ent)
-{
-        if (!crossh->value)
-                return;
-        ent->crosshair = G_Spawn ();
-        ent->crosshair->solid = SOLID_NOT;
-        ent->crosshair->movetype = MOVETYPE_NONE;
-        ent->crosshair->s.renderfx = RF_FULLBRIGHT;
-        gi.setmodel (ent->crosshair, "models/objects/gibs/sm_meat/tris.md2");
-        UpdateFakeCrosshair (ent);
-}
-
-void DestroyFakeCrosshair (edict_t *ent)
-{
-        if (!ent->crosshair)
-                return;
-        G_FreeEdict(ent->crosshair);
 }

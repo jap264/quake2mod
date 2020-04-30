@@ -178,7 +178,6 @@ void InitGame (void)
 
 //yerrr
         tpp = gi.cvar ("tpp", "1", 0);
-        crossh = gi.cvar ("crossh", "1", 0);
 //end
 
 	// flood control
