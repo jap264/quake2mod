@@ -1110,9 +1110,8 @@ struct edict_s
         //END
 };
 
-//SKULL
+//yerrr
 extern  cvar_t  *tpp;
-extern  cvar_t  *crossh;
 extern void CheckChasecam_Viewent (edict_t *ent);
 extern void Cmd_Chasecam_Toggle (edict_t *ent);
 extern void ChasecamRemove (edict_t *ent, char *opt);
@@ -1122,4 +1121,4 @@ extern char *single_statusbar;
 extern void MakeFakeCrosshair (edict_t *ent);
 extern void UpdateFakeCrosshair (edict_t *ent);
 extern void DestroyFakeCrosshair (edict_t *ent);
-//END
+//end
