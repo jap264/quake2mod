@@ -1118,7 +1118,4 @@ extern void ChasecamRemove (edict_t *ent, char *opt);
 extern void ChasecamStart (edict_t *ent);
 extern void Cmd_ToggleHud ();
 extern char *single_statusbar;
-extern void MakeFakeCrosshair (edict_t *ent);
-extern void UpdateFakeCrosshair (edict_t *ent);
-extern void DestroyFakeCrosshair (edict_t *ent);
 //end
