@@ -880,6 +880,22 @@ void Cmd_PlayerList_f(edict_t *ent)
 	gi.cprintf(ent, PRINT_HIGH, "%s", text);
 }
 
+//yerrr start waves
+void Cmd_StartDOA_f(edict_t *ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "Welcome To Dead Ops Arcade!\n");
+
+	edict_t *spot = ent;
+	spot = G_Spawn();
+	
+	spot->s.origin[0] = 188 - 64;
+	spot->s.origin[1] = -164;
+	spot->s.origin[2] = 25;
+
+	spot->s.angles[1] = 270;
+	SP_monster_soldier_light(spot); //spawns a light soldier on that spot
+}
+//end
+
 /*
 =================
 ClientCommand
@@ -967,12 +983,14 @@ void ClientCommand (edict_t *ent)
 		Cmd_Wave_f (ent);
 	else if (Q_stricmp(cmd, "playerlist") == 0)
 		Cmd_PlayerList_f(ent);
-        //yerrr
-        else if (Q_stricmp (cmd, "thirdperson") == 0) //cmd for 3rd person toggle
-                Cmd_Chasecam_Toggle (ent);
-        else if (Q_stricmp (cmd, "hud") == 0) //cmd for hud toggle
-                Cmd_ToggleHud (ent);
-        //end
+    //yerrr
+	else if (Q_stricmp(cmd, "thirdperson") == 0) //cmd for 3rd person toggle
+		Cmd_Chasecam_Toggle(ent);
+	else if (Q_stricmp(cmd, "start") == 0)
+		Cmd_StartDOA_f(ent);
+    else if (Q_stricmp (cmd, "hud") == 0) //cmd for hud toggle
+        Cmd_ToggleHud (ent);
+    //end
 	else	// anything that doesn't match a command will be a chat
 		Cmd_Say_f (ent, false, true);
 }

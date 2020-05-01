@@ -21,6 +21,10 @@ static int	sound_death;
 static int	sound_death_ss;
 static int	sound_cock;
 
+//yerrr
+int kills = 0;
+void Wave_2(edict_t *ent);
+void Wave_3(edict_t *ent);
 
 void soldier_idle (edict_t *self)
 {
@@ -1126,6 +1130,9 @@ mmove_t soldier_move_death6 = {FRAME_death601, FRAME_death610, soldier_frames_de
 void soldier_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	int		n;
+	
+	//yerrr
+	kills++;
 
 // check for gib
 	if (self->health <= self->gib_health)
@@ -1136,6 +1143,9 @@ void soldier_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		ThrowGib (self, "models/objects/gibs/chest/tris.md2", damage, GIB_ORGANIC);
 		ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
 		self->deadflag = DEAD_DEAD;
+		//call wave
+		if (kills == 1)
+			Wave_2(self);
 		return;
 	}
 
@@ -1146,6 +1156,9 @@ void soldier_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
 	self->s.skinnum |= 1;
+	//call wave
+	if (kills == 1)
+		Wave_2(self);
 
 	if (self->s.skinnum == 1)
 		gi.sound (self, CHAN_VOICE, sound_death_light, 1, ATTN_NORM, 0);
@@ -1278,4 +1291,40 @@ void SP_monster_soldier_ss (edict_t *self)
 	self->s.skinnum = 4;
 	self->health = 40;
 	self->gib_health = -30;
+}
+
+//yerrr
+void Wave_2(edict_t *ent){
+	edict_t *spot = G_Spawn();
+	edict_t *spot2 = G_Spawn();
+
+	spot->s.origin[0] = 188 - 64;
+	spot->s.origin[1] = -100;
+	spot->s.origin[2] = 25;
+
+	spot->s.angles[1] = 270;
+	SP_monster_soldier(spot); //spawn one shotgun soldier
+
+	spot2->s.origin[0] = 160;
+	spot2->s.origin[1] = -164;
+	spot2->s.origin[2] = 25;
+	SP_monster_soldier(spot2); //spawn second shotgun soldier
+}
+
+void Wave_3(edict_t *ent){
+	edict_t *spot = G_Spawn();
+	edict_t *spot2 = G_Spawn();
+	edict_t *spot3 = G_Spawn();
+
+	spot->s.origin[0] = 188 - 64;
+	spot->s.origin[1] = -164;
+	spot->s.origin[2] = 80;
+
+	spot->s.angles[1] = 270;
+	SP_monster_soldier(spot); //spawn one shotgun soldier
+
+	spot2->s.origin[0] = 160;
+	spot2->s.origin[1] = -164;
+	spot2->s.origin[2] = 80;
+	SP_monster_soldier(spot2); //spawn second shotgun soldier
 }
