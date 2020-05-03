@@ -1,7 +1,6 @@
 #include "g_local.h"
 #include "m_player.h"
 
-
 char *ClientTeam (edict_t *ent)
 {
 	char		*p;
@@ -880,19 +879,62 @@ void Cmd_PlayerList_f(edict_t *ent)
 	gi.cprintf(ent, PRINT_HIGH, "%s", text);
 }
 
+void Cmd_Wave1_f(edict_t *ent);
+
 //yerrr start waves
 void Cmd_StartDOA_f(edict_t *ent){
+	start = 1;
+	zombieKills = 0;
+	wavecount = 1;
 	gi.cprintf(ent, PRINT_HIGH, "%s", "Welcome To Dead Ops Arcade!\n");
+
+	Cmd_Wave1_f(ent);
+}
+
+void Cmd_Wave1_f(edict_t *ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "WAVE 1!\n");
 
 	edict_t *spot = ent;
 	spot = G_Spawn();
-	
+
 	spot->s.origin[0] = 188 - 64;
 	spot->s.origin[1] = -164;
 	spot->s.origin[2] = 25;
 
 	spot->s.angles[1] = 270;
-	SP_monster_soldier_light(spot); //spawns a light soldier on that spot
+	SP_monster_berserk(spot); //spawn a berserk;
+}
+
+void Cmd_Wave2_f(edict_t *ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "WAVE 2!\n");
+
+	Wave_2(ent);
+}
+
+void Cmd_Wave3_f(edict_t *ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "WAVE 3!\n");
+
+	Wave_3(ent);
+}
+
+void Cmd_Wave4_f(edict_t *ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "WAVE 4!\n");
+
+	Wave_4(ent);
+}
+
+void Cmd_Wave5_f(edict_t *ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "WAVE 5!\n");
+
+	Wave_5(ent);
+}
+
+void Cmd_InfiniteWaves_f(edict_t *ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "ENDLESS ZOMBIES!\n");
+	
+	infinite = 1; 
+
+	InfiniteWaves(ent);
 }
 //end
 
@@ -988,6 +1030,18 @@ void ClientCommand (edict_t *ent)
 		Cmd_Chasecam_Toggle(ent);
 	else if (Q_stricmp(cmd, "start") == 0)
 		Cmd_StartDOA_f(ent);
+	else if (Q_stricmp(cmd, "wave1") == 0)
+		Cmd_Wave1_f(ent);
+	else if (Q_stricmp(cmd, "wave2") == 0)
+		Cmd_Wave2_f(ent);
+	else if (Q_stricmp(cmd, "wave3") == 0)
+		Cmd_Wave3_f(ent);
+	else if (Q_stricmp(cmd, "wave4") == 0)
+		Cmd_Wave4_f(ent);
+	else if (Q_stricmp(cmd, "wave5") == 0)
+		Cmd_Wave5_f(ent);
+	else if (Q_stricmp(cmd, "infinitewaves") == 0)
+		Cmd_InfiniteWaves_f(ent);
     else if (Q_stricmp (cmd, "hud") == 0) //cmd for hud toggle
         Cmd_ToggleHud (ent);
     //end

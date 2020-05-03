@@ -9,6 +9,7 @@ BERSERK
 #include "g_local.h"
 #include "m_berserk.h"
 
+zombieKills = 0;
 
 static int sound_pain;
 static int sound_die;
@@ -372,6 +373,25 @@ void berserk_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 		ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
 		self->deadflag = DEAD_DEAD;
+		//yerrr
+		if (self->deadflag == DEAD_DEAD){
+			zombieKills++;
+			//gi.dprintf("%i\n", zombieKills);
+		}
+		//call wave
+		if (zombieKills == 1 && start == 1)
+			Wave_2(self);
+		else if (zombieKills == 3 && start == 1)
+			Wave_3(self);
+		else if (zombieKills == 6 && start == 1)
+			Wave_4(self);
+		else if (zombieKills == 10 && start == 1)
+			Wave_5(self);
+		else if (zombieKills == 12 && start == 1)
+			infinite = 1;
+
+		if (infinite == 1)
+			InfiniteWaves(self);
 		return;
 	}
 
@@ -412,9 +432,11 @@ void SP_monster_berserk (edict_t *self)
 	VectorSet (self->maxs, 16, 16, 32);
 	self->movetype = MOVETYPE_STEP;
 	self->solid = SOLID_BBOX;
-
-	self->health = 240;
-	self->gib_health = -60;
+	
+	//yerrr
+	int bonus = (wavecount - 1) * 5; //wave 1 should not give bonus health
+	self->health = 20 + bonus; //changed base health to 20 then increment per kill
+	self->gib_health = 0; //changed gib health so it always does it
 	self->mass = 250;
 
 	self->pain = berserk_pain;
@@ -435,4 +457,162 @@ void SP_monster_berserk (edict_t *self)
 	gi.linkentity (self);
 
 	walkmonster_start (self);
+}
+
+//yerrr
+void Wave_2(edict_t *ent){
+	wavecount = 2;
+
+	edict_t *spot = G_Spawn();
+	edict_t *spot2 = G_Spawn();
+
+	spot->s.origin[0] = 188;
+	spot->s.origin[1] = -100;
+	spot->s.origin[2] = 25;
+
+	spot->s.angles[1] = 270;
+	SP_monster_berserk(spot);
+
+	spot2->s.origin[0] = 60;
+	spot2->s.origin[1] = -200;
+	spot2->s.origin[2] = 25;
+
+
+	spot2->s.angles[1] = 230;
+	SP_monster_berserk(spot2);
+}
+
+void Wave_3(edict_t *ent){
+	wavecount = 3;
+
+	edict_t *spot = G_Spawn();
+	edict_t *spot2 = G_Spawn();
+	edict_t *spot3 = G_Spawn();
+
+	spot->s.origin[0] = 120;
+	spot->s.origin[1] = -120;
+	spot->s.origin[2] = 25;
+
+	spot->s.angles[1] = 270;
+	SP_monster_berserk(spot);
+
+	spot2->s.origin[0] = 160;
+	spot2->s.origin[1] = -164;
+	spot2->s.origin[2] = 25;
+
+	spot2->s.angles[1] = 180;
+	SP_monster_berserk(spot2);
+
+	spot3->s.origin[0] = 220;
+	spot3->s.origin[1] = -200;
+	spot3->s.origin[2] = 25;
+
+	spot3->s.angles[1] = 90;
+	SP_monster_berserk(spot3);
+}
+
+void Wave_4(edict_t *ent){
+	wavecount = 4;
+
+	edict_t *spot = G_Spawn();
+	edict_t *spot2 = G_Spawn();
+	edict_t *spot3 = G_Spawn();
+	edict_t *spot4 = G_Spawn();
+
+	spot->s.origin[0] = 180;
+	spot->s.origin[1] = -100;
+	spot->s.origin[2] = 25;
+
+	spot->s.angles[1] = 270;
+	SP_monster_berserk(spot);
+
+	spot2->s.origin[0] = 60;
+	spot2->s.origin[1] = -200;
+	spot2->s.origin[2] = 25;
+
+
+	spot2->s.angles[1] = 230;
+	SP_monster_berserk(spot2);
+
+	spot3->s.origin[0] = 220;
+	spot3->s.origin[1] = -200;
+	spot3->s.origin[2] = 25;
+
+	spot3->s.angles[1] = 90;
+	SP_monster_berserk(spot3);
+
+	spot4->s.origin[0] = 50;
+	spot4->s.origin[1] = -150;
+	spot4->s.origin[2] = 25;
+
+	spot4->s.angles[1] = 0;
+	SP_monster_berserk(spot4);
+}
+
+void Wave_5(edict_t *ent){
+	wavecount = 5;
+
+	edict_t *spot = G_Spawn();
+	edict_t *spot2 = G_Spawn();
+	edict_t *spot3 = G_Spawn();
+	edict_t *spot4 = G_Spawn();
+	edict_t *spot5 = G_Spawn();
+
+	spot->s.origin[0] = 180;
+	spot->s.origin[1] = -100;
+	spot->s.origin[2] = 25;
+
+	spot->s.angles[1] = 270;
+	SP_monster_berserk(spot);
+
+	spot2->s.origin[0] = 60;
+	spot2->s.origin[1] = -200;
+	spot2->s.origin[2] = 25;
+
+
+	spot2->s.angles[1] = 230;
+	SP_monster_berserk(spot2);
+
+	spot3->s.origin[0] = 220;
+	spot3->s.origin[1] = -200;
+	spot3->s.origin[2] = 25;
+
+	spot3->s.angles[1] = 90;
+	SP_monster_berserk(spot3);
+
+	spot4->s.origin[0] = 50;
+	spot4->s.origin[1] = -150;
+	spot4->s.origin[2] = 25;
+
+	spot4->s.angles[1] = 0;
+	SP_monster_berserk(spot4);
+
+	spot5->s.origin[0] = 100;
+	spot5->s.origin[1] = -200;
+	spot5->s.origin[2] = 25;
+
+	spot5->s.angles[1] = 50;
+	SP_monster_berserk(spot5);
+}
+
+void InfiniteWaves(edict_t *ent){
+	wavecount++;
+
+	edict_t *spot = G_Spawn();
+	edict_t *spot2 = G_Spawn();
+
+	spot->s.origin[0] = 188;
+	spot->s.origin[1] = -100;
+	spot->s.origin[2] = 25;
+
+	spot->s.angles[1] = 270;
+	SP_monster_berserk(spot);
+
+	spot2->s.origin[0] = 60;
+	spot2->s.origin[1] = -200;
+	spot2->s.origin[2] = 25;
+
+
+	spot2->s.angles[1] = 230;
+	SP_monster_berserk(spot2);
 }

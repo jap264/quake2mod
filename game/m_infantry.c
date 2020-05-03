@@ -378,6 +378,16 @@ void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 			ThrowGib (self, "models/objects/gibs/sm_meat/tris.md2", damage, GIB_ORGANIC);
 		ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
 		self->deadflag = DEAD_DEAD;
+		//yerrr
+		/*if (self->deadflag == DEAD_DEAD){
+			zombieKills++;
+			gi.dprintf("%i\n", zombieKills);
+		}
+		
+		if (zombieKills == 7 && start == 1)
+			Wave_5(self);
+		else if (zombieKills == 11 && start == 1)
+			Wave_6(self);*/
 		return;
 	}
 
@@ -387,6 +397,15 @@ void infantry_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dam
 // regular death
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
+	/*if (self->deadflag == DEAD_DEAD){
+		zombieKills++;
+		gi.dprintf("%i\n", zombieKills);
+	}
+
+	if (zombieKills == 7 && start == 1)
+		Wave_5(self);
+	else if (zombieKills == 11 && start == 1)
+		Wave_6(self);*/
 
 	n = rand() % 3;
 	if (n == 0)
@@ -586,3 +605,51 @@ void SP_monster_infantry (edict_t *self)
 
 	walkmonster_start (self);
 }
+
+//yerrr
+/*
+void Wave_5(edict_t *ent){ //1 infantry, 3 light
+	edict_t *spot0 = G_Spawn();
+	edict_t *spot = G_Spawn();
+	edict_t *spot2 = G_Spawn();
+	edict_t *spot3 = G_Spawn();
+
+	spot0->s.origin[0] = 188;
+	spot0->s.origin[1] = -100;
+	spot0->s.origin[2] = 25;
+
+	spot0->s.angles[1] = 270;
+	SP_monster_infantry(spot0);
+
+	spot->s.origin[0] = 120;
+	spot->s.origin[1] = -120;
+	spot->s.origin[2] = 25;
+
+	spot->s.angles[1] = 270;
+	SP_monster_soldier_light(spot); 
+
+	spot2->s.origin[0] = 160;
+	spot2->s.origin[1] = -164;
+	spot2->s.origin[2] = 25;
+
+	spot2->s.angles[1] = 270;
+	SP_monster_soldier_light(spot2);
+
+	spot3->s.origin[0] = 220;
+	spot3->s.origin[1] = -200;
+	spot3->s.origin[2] = 25;
+
+	spot3->s.angles[1] = 270;
+	SP_monster_soldier_light(spot3); 
+}
+
+void Wave_6(edict_t *ent){ //one berserk
+	edict_t *spot = G_Spawn();
+
+	spot->s.origin[0] = 188;
+	spot->s.origin[1] = -100;
+	spot->s.origin[2] = 25;
+
+	spot->s.angles[1] = 270;
+	SP_monster_berserk(spot);
+}*/

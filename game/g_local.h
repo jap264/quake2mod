@@ -1118,4 +1118,14 @@ extern void ChasecamRemove (edict_t *ent, char *opt);
 extern void ChasecamStart (edict_t *ent);
 extern void Cmd_ToggleHud ();
 extern char *single_statusbar;
+
+extern int zombieKills;
+extern int start;
+extern int infinite;
+extern int wavecount;
+extern void Wave_2(edict_t *ent);
+extern void Wave_3(edict_t *ent);
+extern void Wave_4(edict_t *ent);
+extern void Wave_5(edict_t *ent);
+extern void InfiniteWaves(edict_t *ent);
 //end
