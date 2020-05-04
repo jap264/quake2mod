@@ -936,6 +936,68 @@ void Cmd_InfiniteWaves_f(edict_t *ent){
 
 	InfiniteWaves(ent);
 }
+
+void Cmd_GiveInv_f(edict_t * ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "Invincibility Powerup!\n");
+	
+	edict_t *spot = ent;
+	spot = G_Spawn();
+
+	spot->s.origin[0] = 188 - 64;
+	spot->s.origin[1] = -164;
+	spot->s.origin[2] = 25;
+
+	spot->s.angles[1] = 270;
+	SP_item_health_small(spot);
+
+	//GiveInv(ent);
+}
+
+void Cmd_GiveQuad_f(edict_t * ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "QuadDamage Powerup!\n");
+	
+	edict_t *spot = ent;
+	spot = G_Spawn();
+
+	spot->s.origin[0] = 188 - 64;
+	spot->s.origin[1] = -164;
+	spot->s.origin[2] = 25;
+
+	spot->s.angles[1] = 270;
+	SP_item_health_mega(spot);
+
+	//GiveQuad(ent);
+}
+
+void Cmd_GiveRegen_f(edict_t * ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "HealthRegen Powerup!\n");
+	
+	regenCMD = 1;
+
+	edict_t *spot = ent;
+	spot = G_Spawn();
+
+	spot->s.origin[0] = 188 - 64;
+	spot->s.origin[1] = -164;
+	spot->s.origin[2] = 25;
+
+	spot->s.angles[1] = 270;
+	SP_item_health(spot);
+
+	//GiveRegen(ent);
+}
+
+void Cmd_GiveInstaKill_f(edict_t * ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "InstaKill Powerup!\n");
+	//GiveInstaKill(ent);
+}
+
+void Cmd_GiveAtkSpd_f(edict_t * ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "Deathmachine Powerup!\n");
+
+	atkspdCMD = 1;
+	//GiveAtkSpd(ent);
+}
 //end
 
 /*
@@ -1042,6 +1104,16 @@ void ClientCommand (edict_t *ent)
 		Cmd_Wave5_f(ent);
 	else if (Q_stricmp(cmd, "infinitewaves") == 0)
 		Cmd_InfiniteWaves_f(ent);
+	else if (Q_stricmp(cmd, "invinc") == 0)
+		Cmd_GiveInv_f(ent);
+	else if (Q_stricmp(cmd, "quad") == 0)
+		Cmd_GiveQuad_f(ent);
+	else if (Q_stricmp(cmd, "regen") == 0)
+		Cmd_GiveRegen_f(ent);
+	else if (Q_stricmp(cmd, "insta") == 0)
+		Cmd_GiveInstaKill_f(ent);
+	else if (Q_stricmp(cmd, "atkspd") == 0)
+		Cmd_GiveAtkSpd_f(ent);
     else if (Q_stricmp (cmd, "hud") == 0) //cmd for hud toggle
         Cmd_ToggleHud (ent);
     //end

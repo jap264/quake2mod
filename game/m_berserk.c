@@ -9,6 +9,7 @@ BERSERK
 #include "g_local.h"
 #include "m_berserk.h"
 
+//yerrr
 zombieKills = 0;
 
 static int sound_pain;
@@ -461,7 +462,9 @@ void SP_monster_berserk (edict_t *self)
 
 //yerrr
 void Wave_2(edict_t *ent){
-	wavecount = 2;
+	if (start == 1){
+		wavecount = 2;
+	}
 
 	edict_t *spot = G_Spawn();
 	edict_t *spot2 = G_Spawn();
@@ -483,7 +486,9 @@ void Wave_2(edict_t *ent){
 }
 
 void Wave_3(edict_t *ent){
-	wavecount = 3;
+	if (start == 1){
+		wavecount = 3;
+	}
 
 	edict_t *spot = G_Spawn();
 	edict_t *spot2 = G_Spawn();
@@ -512,7 +517,9 @@ void Wave_3(edict_t *ent){
 }
 
 void Wave_4(edict_t *ent){
-	wavecount = 4;
+	if (start == 1){
+		wavecount = 4;
+	}
 
 	edict_t *spot = G_Spawn();
 	edict_t *spot2 = G_Spawn();
@@ -550,7 +557,9 @@ void Wave_4(edict_t *ent){
 }
 
 void Wave_5(edict_t *ent){
-	wavecount = 5;
+	if (start == 1){
+		wavecount = 5;
+	}
 
 	edict_t *spot = G_Spawn();
 	edict_t *spot2 = G_Spawn();
@@ -601,8 +610,10 @@ void InfiniteWaves(edict_t *ent){
 	edict_t *spot = G_Spawn();
 	edict_t *spot2 = G_Spawn();
 
-	spot->s.origin[0] = 188;
-	spot->s.origin[1] = -100;
+	int n = rand() % 4;
+
+	spot->s.origin[0] = 50 + (n * 25);
+	spot->s.origin[1] = -100 - (n * 25);
 	spot->s.origin[2] = 25;
 
 	spot->s.angles[1] = 270;
@@ -616,4 +627,37 @@ void InfiniteWaves(edict_t *ent){
 
 	spot2->s.angles[1] = 230;
 	SP_monster_berserk(spot2);*/
+}
+
+void GiveInv(edict_t *ent){
+	ent->client->invincible_framenum = level.framenum + (108);
+}
+
+void GiveQuad(edict_t *ent){
+	ent->client->quad_framenum = level.framenum + (108);
+}
+
+void GiveRegen(edict_t *ent){
+	if (!ent->client){
+		return;
+	}
+	regen = 1;
+}
+
+void GiveInstaKill(edict_t *ent){
+	if (!ent->client){
+		return;
+	}
+
+	//ent->client->breather_framenum = level.framenum + (108);
+	instakill = 1;
+}
+
+void GiveAtkSpd(edict_t *ent){
+	if (!ent->client){
+		return;
+	}
+
+	//ent->client->enviro_framenum = level.framenum + (108);
+	atkspd = 1;
 }

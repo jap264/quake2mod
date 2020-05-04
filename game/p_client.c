@@ -8,6 +8,14 @@ void SP_misc_teleporter_dest (edict_t *ent);
 start = 0;
 infinite = 0;
 wavecount = 0;
+regen = 0;
+regenCMD = 0;
+instakill = 0;
+atkspd = 0;
+atkspdCMD = 0;
+int rcooldown = 500;
+int icooldown = 500;
+int acooldown = 500;
 
 //
 // Gross, ugly, disgustuing hack section
@@ -1636,6 +1644,33 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	level.current_entity = ent;
 	client = ent->client;
 
+	//yerrr
+	if (regen == 1){
+		if (ent->health >= 100){
+			ent->health = 100;
+			rcooldown = 500;
+			regen = 0;
+		}
+
+		if (rcooldown % 100 == 0){
+			if (ent->health + 10 >= 100){
+				ent->health = 100;
+			}
+			
+			else{
+				ent->health += 10;
+			}
+			//gi.dprintf("%i", rcooldown);
+		}
+
+		rcooldown--;
+		if (rcooldown < 0){
+			regen = 0;
+			rcooldown = 500;
+		}
+	}
+
+	
 	if (level.intermissiontime)
 	{
                 //yerrr

@@ -540,8 +540,35 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 		if (other->health >= other->max_health)
 			return false;
 
-	other->health += ent->count;
+	//other->health += ent->count; 
+	//yerrr
+		if (ent->count == 0){
+			if (regenCMD == 1){
+				GiveRegen(other);
+				regenCMD = 0;
+			}
+			
+			else if (atkspdCMD == 1){
+				GiveAtkSpd(other);
+				atkspdCMD == 0;
+			}
+			
+			else{
+				int n = rand() % 2;
 
+				if (n == 0){ GiveRegen(other); }
+				else { GiveAtkSpd(other); }
+			}
+		}
+		else if (ent->count == 1){
+			GiveInv(other);
+		}
+		else if (ent->count == 2){
+			//GiveInstaKill(other);
+		}
+		else if (ent->count == 3){
+			GiveQuad(other);
+		}
 	if (!(ent->style & HEALTH_IGNORE_MAX))
 	{
 		if (other->health > other->max_health)
@@ -2108,7 +2135,7 @@ void SP_item_health (edict_t *self)
 	}
 
 	self->model = "models/items/healing/medium/tris.md2";
-	self->count = 10;
+	self->count = 0; //yerrr changed to 0
 	SpawnItem (self, FindItem ("Health"));
 	gi.soundindex ("items/n_health.wav");
 }
@@ -2124,7 +2151,7 @@ void SP_item_health_small (edict_t *self)
 	}
 
 	self->model = "models/items/healing/stimpack/tris.md2";
-	self->count = 2;
+	self->count = 1; //yerrr changed to 0
 	SpawnItem (self, FindItem ("Health"));
 	self->style = HEALTH_IGNORE_MAX;
 	gi.soundindex ("items/s_health.wav");
@@ -2141,7 +2168,7 @@ void SP_item_health_large (edict_t *self)
 	}
 
 	self->model = "models/items/healing/large/tris.md2";
-	self->count = 25;
+	self->count = 2; //yerrr changed to 0
 	SpawnItem (self, FindItem ("Health"));
 	gi.soundindex ("items/l_health.wav");
 }
@@ -2157,7 +2184,7 @@ void SP_item_health_mega (edict_t *self)
 	}
 
 	self->model = "models/items/mega_h/tris.md2";
-	self->count = 100;
+	self->count = 3; //yerrr changed to 0
 	SpawnItem (self, FindItem ("Health"));
 	gi.soundindex ("items/m_health.wav");
 	self->style = HEALTH_IGNORE_MAX|HEALTH_TIMED;
