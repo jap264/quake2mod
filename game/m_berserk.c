@@ -608,11 +608,12 @@ void InfiniteWaves(edict_t *ent){
 	spot->s.angles[1] = 270;
 	SP_monster_berserk(spot);
 
+	/* //kinda breaks the game
 	spot2->s.origin[0] = 60;
 	spot2->s.origin[1] = -200;
 	spot2->s.origin[2] = 25;
 
 
 	spot2->s.angles[1] = 230;
-	SP_monster_berserk(spot2);
+	SP_monster_berserk(spot2);*/
 }

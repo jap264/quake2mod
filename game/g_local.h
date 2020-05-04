@@ -946,13 +946,13 @@ struct gclient_s
 
 	edict_t		*chase_target;		// player we are chasing
 	qboolean	update_chase;		// need to update chase info?
-        //SKULL
+        //yerrr
         int             chasetoggle;
         edict_t         *chasecam;
         edict_t         *oldplayer;
         int             use;
         int             zoom;
-        //END
+        //end
 };
 
 
@@ -1111,7 +1111,7 @@ struct edict_s
 };
 
 //yerrr
-extern  cvar_t  *tpp;
+extern cvar_t *tpp;
 extern void CheckChasecam_Viewent (edict_t *ent);
 extern void Cmd_Chasecam_Toggle (edict_t *ent);
 extern void ChasecamRemove (edict_t *ent, char *opt);

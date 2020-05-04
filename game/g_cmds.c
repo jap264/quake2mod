@@ -211,7 +211,7 @@ void Cmd_Give_f (edict_t *ent)
 
 	if (give_all || Q_stricmp(name, "Power Shield") == 0)
 	{
-		it = FindItem("Power Shield");
+		it = FindItem("Power Shield"); //yerrr spawning items
 		it_ent = G_Spawn();
 		it_ent->classname = it->classname;
 		SpawnItem (it_ent, it);
