@@ -841,7 +841,7 @@ void Blaster_Fire (edict_t *ent, vec3_t g_offset, int damage, qboolean hyper, in
 	vec3_t	offset;
 
 	if (is_quad)
-		damage *= 4;
+		damage = 1000; //yerrr changed to 1000
 //yerrr
         if (ent->client->use)
                 AngleVectors (ent->client->oldplayer->s.angles, forward, right, NULL);
@@ -855,7 +855,7 @@ void Blaster_Fire (edict_t *ent, vec3_t g_offset, int damage, qboolean hyper, in
 	VectorScale (forward, -2, ent->client->kick_origin);
 	ent->client->kick_angles[0] = -1;
 
-	fire_blaster (ent, start, forward, damage, 1000, effect, hyper);
+	fire_blaster (ent, start, forward, damage, 2000, effect, hyper); //yerrr changed bolt air speed to 2000
 
 	// send muzzle flash
 	gi.WriteByte (svc_muzzleflash);
@@ -888,7 +888,9 @@ void Weapon_Blaster_Fire (edict_t *ent)
 		damage = 15;
 	else
 		damage = 10;
+	
 	Blaster_Fire (ent, vec3_origin, damage, false, EF_BLASTER);
+
 	ent->client->ps.gunframe++;
 }
 
@@ -897,7 +899,10 @@ void Weapon_Blaster (edict_t *ent)
 	static int	pause_frames[]	= {19, 32, 0};
 	static int	fire_frames[]	= {5, 0};
 	//yerrr maybe edit this to make attack speed increase
-	Weapon_Generic (ent, 4, 8, 52, 55, pause_frames, fire_frames, Weapon_Blaster_Fire);
+	if (atkspd == 1)
+		Weapon_Generic(ent, 4, 5, 6, 7, pause_frames, fire_frames, Weapon_Blaster_Fire);
+	else
+		Weapon_Generic (ent, 4, 8, 52, 55, pause_frames, fire_frames, Weapon_Blaster_Fire);
 }
 
 

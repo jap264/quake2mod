@@ -930,7 +930,7 @@ void Cmd_Wave5_f(edict_t *ent){
 }
 
 void Cmd_InfiniteWaves_f(edict_t *ent){
-	gi.cprintf(ent, PRINT_HIGH, "%s", "ENDLESS ZOMBIES!\n");
+	gi.cprintf(ent, PRINT_HIGH, "%s", "ENDLESS WAVES!\n");
 	
 	infinite = 1; 
 
@@ -953,9 +953,11 @@ void Cmd_GiveInv_f(edict_t * ent){
 	//GiveInv(ent);
 }
 
-void Cmd_GiveQuad_f(edict_t * ent){
-	gi.cprintf(ent, PRINT_HIGH, "%s", "QuadDamage Powerup!\n");
+void Cmd_GiveNuke_f(edict_t * ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "Nuke Powerup!\n");
 	
+	nukeCMD = 1;
+
 	edict_t *spot = ent;
 	spot = G_Spawn();
 
@@ -966,11 +968,11 @@ void Cmd_GiveQuad_f(edict_t * ent){
 	spot->s.angles[1] = 270;
 	SP_item_health_mega(spot);
 
-	//GiveQuad(ent);
+	//GiveNuke(ent);
 }
 
 void Cmd_GiveRegen_f(edict_t * ent){
-	gi.cprintf(ent, PRINT_HIGH, "%s", "HealthRegen Powerup!\n");
+	gi.cprintf(ent, PRINT_HIGH, "%s", "Health Regeneration Powerup!\n");
 	
 	regenCMD = 1;
 
@@ -988,14 +990,35 @@ void Cmd_GiveRegen_f(edict_t * ent){
 }
 
 void Cmd_GiveInstaKill_f(edict_t * ent){
-	gi.cprintf(ent, PRINT_HIGH, "%s", "InstaKill Powerup!\n");
+	gi.cprintf(ent, PRINT_HIGH, "%s", "Insta-Kill Powerup!\n");
+	
+	edict_t *spot = ent;
+	spot = G_Spawn();
+
+	spot->s.origin[0] = 188 - 64;
+	spot->s.origin[1] = -164;
+	spot->s.origin[2] = 25;
+
+	spot->s.angles[1] = 270;
+	SP_item_health_large(spot);
+
 	//GiveInstaKill(ent);
 }
 
 void Cmd_GiveAtkSpd_f(edict_t * ent){
-	gi.cprintf(ent, PRINT_HIGH, "%s", "Deathmachine Powerup!\n");
+	gi.cprintf(ent, PRINT_HIGH, "%s", "Attack Speed Powerup!\n");
 
 	atkspdCMD = 1;
+
+	edict_t *spot = ent;
+	spot = G_Spawn();
+
+	spot->s.origin[0] = 188 - 64;
+	spot->s.origin[1] = -164;
+	spot->s.origin[2] = 25;
+
+	spot->s.angles[1] = 270;
+	SP_item_health(spot);
 	//GiveAtkSpd(ent);
 }
 //end
@@ -1106,8 +1129,8 @@ void ClientCommand (edict_t *ent)
 		Cmd_InfiniteWaves_f(ent);
 	else if (Q_stricmp(cmd, "invinc") == 0)
 		Cmd_GiveInv_f(ent);
-	else if (Q_stricmp(cmd, "quad") == 0)
-		Cmd_GiveQuad_f(ent);
+	else if (Q_stricmp(cmd, "nuke") == 0)
+		Cmd_GiveNuke_f(ent);
 	else if (Q_stricmp(cmd, "regen") == 0)
 		Cmd_GiveRegen_f(ent);
 	else if (Q_stricmp(cmd, "insta") == 0)

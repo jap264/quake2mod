@@ -8,14 +8,16 @@ void SP_misc_teleporter_dest (edict_t *ent);
 start = 0;
 infinite = 0;
 wavecount = 0;
+nextWave = 0;
 regen = 0;
 regenCMD = 0;
-instakill = 0;
+nuke = 0;
+nukeCMD = 0;
 atkspd = 0;
 atkspdCMD = 0;
-int rcooldown = 500;
-int icooldown = 500;
-int acooldown = 500;
+int rcooldown = 1000;
+int acooldown = 1200;
+int ncooldown = 400;
 
 //
 // Gross, ugly, disgustuing hack section
@@ -1643,14 +1645,29 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 	level.current_entity = ent;
 	client = ent->client;
+	player = ent;
 
-	//yerrr
-	if (regen == 1){
-		if (ent->health >= 100){
-			ent->health = 100;
-			rcooldown = 500;
-			regen = 0;
+	//yerrr powerups
+
+	//nuke powerup
+	if (nuke == 1 && wavecount == nextWave){
+		nuke == 0;
+		gi.dprintf("nuke off");
+	}
+
+	if (nukeCMD == 1){
+		ncooldown--;
+		//gi.dprintf("%i\n", ncooldown);
+		if (ncooldown <= 0){
+			nuke = 0;
+			nukeCMD = 0;
+			ncooldown = 400;
+			gi.dprintf("nuke off");
 		}
+	}
+
+	//regen powerup
+	if (regen == 1){
 
 		if (rcooldown % 100 == 0){
 			if (ent->health + 10 >= 100){
@@ -1664,12 +1681,22 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 		}
 
 		rcooldown--;
-		if (rcooldown < 0){
+		if (rcooldown <= 0){
 			regen = 0;
-			rcooldown = 500;
+			rcooldown = 1000;
 		}
 	}
 
+	//atkspd powerup
+	if (atkspd == 1){
+
+		acooldown--;
+		if (acooldown <= 0){
+			//gi.dprintf("%s", "atkspd should be off\n");
+			atkspd = 0;
+			acooldown = 1200;
+		}
+	}
 	
 	if (level.intermissiontime)
 	{

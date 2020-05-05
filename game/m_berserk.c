@@ -29,6 +29,50 @@ void berserk_search (edict_t *self)
 	gi.sound (self, CHAN_VOICE, sound_search, 1, ATTN_NORM, 0);
 }
 
+//yerrr moved from bottom
+void berserk_dead(edict_t *self)
+{
+	VectorSet(self->mins, -16, -16, -24);
+	VectorSet(self->maxs, 16, 16, -8);
+	self->movetype = MOVETYPE_TOSS;
+	self->svflags |= SVF_DEADMONSTER;
+	self->nextthink = 0;
+	gi.linkentity(self);
+}
+
+
+mframe_t berserk_frames_death1[] =
+{
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL
+
+};
+mmove_t berserk_move_death1 = { FRAME_death1, FRAME_death13, berserk_frames_death1, berserk_dead };
+
+
+mframe_t berserk_frames_death2[] =
+{
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL,
+	ai_move, 0, NULL
+};
+mmove_t berserk_move_death2 = { FRAME_deathc1, FRAME_deathc8, berserk_frames_death2, berserk_dead };
 
 void berserk_fidget (edict_t *self);
 mframe_t berserk_frames_stand [] =
@@ -44,6 +88,9 @@ mmove_t berserk_move_stand = {FRAME_stand1, FRAME_stand5, berserk_frames_stand, 
 void berserk_stand (edict_t *self)
 {
 	self->monsterinfo.currentmove = &berserk_move_stand;
+	//yerrr
+	if (nuke == 1)
+		NukeDeath(self);
 }
 
 mframe_t berserk_frames_stand_fidget [] =
@@ -80,6 +127,10 @@ void berserk_fidget (edict_t *self)
 
 	self->monsterinfo.currentmove = &berserk_move_stand_fidget;
 	gi.sound (self, CHAN_WEAPON, sound_idle, 1, ATTN_IDLE, 0);
+
+	//yerrr
+	if (nuke == 1)
+		NukeDeath(self);
 }
 
 
@@ -103,6 +154,9 @@ mmove_t berserk_move_walk = {FRAME_walkc1, FRAME_walkc11, berserk_frames_walk, N
 void berserk_walk (edict_t *self)
 {
 	self->monsterinfo.currentmove = &berserk_move_walk;
+	//yerrr
+	if (nuke == 1)
+		NukeDeath(self);
 }
 
 /*
@@ -147,6 +201,10 @@ void berserk_run (edict_t *self)
 		self->monsterinfo.currentmove = &berserk_move_stand;
 	else
 		self->monsterinfo.currentmove = &berserk_move_run1;
+
+	//yerrr
+	if (nuke == 1)
+		NukeDeath(self);
 }
 
 
@@ -228,13 +286,16 @@ mframe_t berserk_frames_attack_strike [] =
 	
 mmove_t berserk_move_attack_strike = {FRAME_att_c21, FRAME_att_c34, berserk_frames_attack_strike, berserk_run};
 
-
 void berserk_melee (edict_t *self)
 {
 	if ((rand() % 2) == 0)
 		self->monsterinfo.currentmove = &berserk_move_attack_spike;
 	else
 		self->monsterinfo.currentmove = &berserk_move_attack_club;
+
+	//yerrr
+	if (nuke == 1)
+		NukeDeath(self);
 }
 
 
@@ -315,50 +376,7 @@ void berserk_pain (edict_t *self, edict_t *other, float kick, int damage)
 		self->monsterinfo.currentmove = &berserk_move_pain2;
 }
 
-
-void berserk_dead (edict_t *self)
-{
-	VectorSet (self->mins, -16, -16, -24);
-	VectorSet (self->maxs, 16, 16, -8);
-	self->movetype = MOVETYPE_TOSS;
-	self->svflags |= SVF_DEADMONSTER;
-	self->nextthink = 0;
-	gi.linkentity (self);
-}
-
-
-mframe_t berserk_frames_death1 [] =
-{
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL
-	
-};
-mmove_t berserk_move_death1 = {FRAME_death1, FRAME_death13, berserk_frames_death1, berserk_dead};
-
-
-mframe_t berserk_frames_death2 [] =
-{
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL,
-	ai_move, 0, NULL
-};
-mmove_t berserk_move_death2 = {FRAME_deathc1, FRAME_deathc8, berserk_frames_death2, berserk_dead};
+//yerrr moved to up
 
 
 void berserk_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
@@ -375,12 +393,13 @@ void berserk_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		ThrowHead (self, "models/objects/gibs/head2/tris.md2", damage, GIB_ORGANIC);
 		self->deadflag = DEAD_DEAD;
 		//yerrr
-		if (self->deadflag == DEAD_DEAD){
+		if (self->deadflag == DEAD_DEAD){ //counting how many zombies the player kills
 			zombieKills++;
 			//gi.dprintf("%i\n", zombieKills);
 		}
-		//call wave
-		if (zombieKills == 1 && start == 1)
+		//Zombie Waves
+		//only calls the next wave if doa activated
+		if (zombieKills == 1 && start == 1) 
 			Wave_2(self);
 		else if (zombieKills == 3 && start == 1)
 			Wave_3(self);
@@ -393,6 +412,12 @@ void berserk_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 
 		if (infinite == 1)
 			InfiniteWaves(self);
+		
+		int n = rand() % 4;
+
+		if (n == 0 && start == 1) //only spawn powerups from zombie deaths if doa activated
+			SpawnPowerUp(self);
+
 		return;
 	}
 
@@ -402,6 +427,29 @@ void berserk_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 	gi.sound (self, CHAN_VOICE, sound_die, 1, ATTN_NORM, 0);
 	self->deadflag = DEAD_DEAD;
 	self->takedamage = DAMAGE_YES;
+
+	if (self->deadflag == DEAD_DEAD){ //counting how many zombies the player kills
+		zombieKills++;
+		//gi.dprintf("%i\n", zombieKills);
+	}
+	//Zombie Waves
+	//only calls the next wave if doa activated
+	if (zombieKills == 1 && start == 1)
+		Wave_2(self);
+	else if (zombieKills == 3 && start == 1)
+		Wave_3(self);
+	else if (zombieKills == 6 && start == 1)
+		Wave_4(self);
+	else if (zombieKills == 10 && start == 1)
+		Wave_5(self);
+	else if (zombieKills == 12 && start == 1)
+		infinite = 1;
+
+	if (infinite == 1)
+		InfiniteWaves(self);
+
+	if (n == 0 && start == 1) //only spawn powerups from zombie deaths if doa activated
+		SpawnPowerUp(self);
 
 	if (damage >= 50)
 		self->monsterinfo.currentmove = &berserk_move_death1;
@@ -462,9 +510,7 @@ void SP_monster_berserk (edict_t *self)
 
 //yerrr
 void Wave_2(edict_t *ent){
-	if (start == 1){
-		wavecount = 2;
-	}
+	wavecount = 2;
 
 	edict_t *spot = G_Spawn();
 	edict_t *spot2 = G_Spawn();
@@ -486,9 +532,7 @@ void Wave_2(edict_t *ent){
 }
 
 void Wave_3(edict_t *ent){
-	if (start == 1){
-		wavecount = 3;
-	}
+	wavecount = 3;
 
 	edict_t *spot = G_Spawn();
 	edict_t *spot2 = G_Spawn();
@@ -517,9 +561,7 @@ void Wave_3(edict_t *ent){
 }
 
 void Wave_4(edict_t *ent){
-	if (start == 1){
-		wavecount = 4;
-	}
+	wavecount = 4;
 
 	edict_t *spot = G_Spawn();
 	edict_t *spot2 = G_Spawn();
@@ -557,9 +599,8 @@ void Wave_4(edict_t *ent){
 }
 
 void Wave_5(edict_t *ent){
-	if (start == 1){
-		wavecount = 5;
-	}
+	wavecount = 5;
+	
 
 	edict_t *spot = G_Spawn();
 	edict_t *spot2 = G_Spawn();
@@ -633,31 +674,37 @@ void GiveInv(edict_t *ent){
 	ent->client->invincible_framenum = level.framenum + (108);
 }
 
-void GiveQuad(edict_t *ent){
-	ent->client->quad_framenum = level.framenum + (108);
+void GiveNuke(edict_t *ent){
+	nuke = 1;
+	nextWave = wavecount + 1;
 }
 
 void GiveRegen(edict_t *ent){
-	if (!ent->client){
-		return;
-	}
+
 	regen = 1;
+	ent->client->enviro_framenum = level.framenum + (108);
 }
 
 void GiveInstaKill(edict_t *ent){
-	if (!ent->client){
-		return;
-	}
-
-	//ent->client->breather_framenum = level.framenum + (108);
-	instakill = 1;
+	ent->client->quad_framenum = level.framenum + (108);
 }
 
 void GiveAtkSpd(edict_t *ent){
-	if (!ent->client){
-		return;
-	}
 
-	//ent->client->enviro_framenum = level.framenum + (108);
+	ent->client->breather_framenum = level.framenum + (156);
 	atkspd = 1;
+}
+
+void SpawnPowerUp(edict_t *ent){
+	int n = (rand() % 10) + 1;
+
+	if (n == 1) { SP_item_health_small(ent); }
+	else if (n == 2 || n == 3) { SP_item_health_large(ent); }
+	else if (n >= 4 && n <=  6) { SP_item_health_mega(ent); }
+	else if (n >= 7 && n <=  10) { SP_item_health(ent); }
+}
+
+void NukeDeath(edict_t *self){
+	vec3_t point = { 147029148 };
+	berserk_die(self, self, self, 500, point);
 }

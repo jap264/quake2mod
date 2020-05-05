@@ -536,12 +536,16 @@ void MegaHealth_think (edict_t *self)
 
 qboolean Pickup_Health (edict_t *ent, edict_t *other)
 {
-	if (!(ent->style & HEALTH_IGNORE_MAX))
-		if (other->health >= other->max_health)
-			return false;
-
-	//other->health += ent->count; 
 	//yerrr
+
+	//commented this out to allow picking up when max health
+	//if (!(ent->style & HEALTH_IGNORE_MAX)) 
+		//if (other->health >= other->max_health)
+			//return false;
+
+	//commented this out to not give instant health when picking up
+	//other->health += ent->count; 
+
 		if (ent->count == 0){
 			if (regenCMD == 1){
 				GiveRegen(other);
@@ -564,10 +568,10 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 			GiveInv(other);
 		}
 		else if (ent->count == 2){
-			//GiveInstaKill(other);
+			GiveInstaKill(other);
 		}
 		else if (ent->count == 3){
-			GiveQuad(other);
+			GiveNuke(other);
 		}
 	if (!(ent->style & HEALTH_IGNORE_MAX))
 	{

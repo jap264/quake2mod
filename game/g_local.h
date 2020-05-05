@@ -1111,6 +1111,7 @@ struct edict_s
 };
 
 //yerrr
+edict_t *player;
 
 //Third Person
 extern cvar_t *tpp;
@@ -1126,6 +1127,7 @@ extern int zombieKills;
 extern int start;
 extern int infinite;
 extern int wavecount;
+extern int nextWave;
 
 extern void Wave_2(edict_t *ent);
 extern void Wave_3(edict_t *ent);
@@ -1134,15 +1136,22 @@ extern void Wave_5(edict_t *ent);
 extern void InfiniteWaves(edict_t *ent);
 
 //Powerups
+extern int nuke;
+extern int nukeCMD;
+
 extern int regen;
 extern int regenCMD;
-extern int instakill;
+
 extern int atkspd;
 extern int atkspdCMD;
-extern void GivePowerUp(edict_t *ent);
+
+extern void SpawnPowerUp(edict_t *ent);
+
 extern void GiveInv(edict_t *ent);
-extern void GiveQuad(edict_t *ent);
+extern void GiveNuke(edict_t *ent);
 extern void GiveRegen(edict_t *ent);
 extern void GiveInstaKill(edict_t *ent);
 extern void GiveAtkSpd(edict_t *ent);
+
+extern void NukeDeath(edict_t *ent);
 //end
