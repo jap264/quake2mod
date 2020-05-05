@@ -571,7 +571,7 @@ qboolean Pickup_Health (edict_t *ent, edict_t *other)
 			GiveInstaKill(other);
 		}
 		else if (ent->count == 3){
-			GiveNuke(other);
+			GiveReverse(other);
 		}
 	if (!(ent->style & HEALTH_IGNORE_MAX))
 	{

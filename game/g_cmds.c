@@ -953,11 +953,9 @@ void Cmd_GiveInv_f(edict_t * ent){
 	//GiveInv(ent);
 }
 
-void Cmd_GiveNuke_f(edict_t * ent){
-	gi.cprintf(ent, PRINT_HIGH, "%s", "Nuke Powerup!\n");
+void Cmd_GiveReverse_f(edict_t * ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "Reverse Powerup!\n");
 	
-	nukeCMD = 1;
-
 	edict_t *spot = ent;
 	spot = G_Spawn();
 
@@ -967,8 +965,12 @@ void Cmd_GiveNuke_f(edict_t * ent){
 
 	spot->s.angles[1] = 270;
 	SP_item_health_mega(spot);
+}
 
-	//GiveNuke(ent);
+void Cmd_GiveRevNow_f(edict_t * ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "Reverse Now!\n");
+
+	GiveReverse(ent);
 }
 
 void Cmd_GiveRegen_f(edict_t * ent){
@@ -1020,6 +1022,11 @@ void Cmd_GiveAtkSpd_f(edict_t * ent){
 	spot->s.angles[1] = 270;
 	SP_item_health(spot);
 	//GiveAtkSpd(ent);
+}
+
+void Cmd_GiveAtkSpdNow_f(edict_t * ent){
+	gi.cprintf(ent, PRINT_HIGH, "%s", "AtkSpd Now Powerup!\n");
+	GiveAtkSpd(ent);
 }
 //end
 
@@ -1125,18 +1132,22 @@ void ClientCommand (edict_t *ent)
 		Cmd_Wave4_f(ent);
 	else if (Q_stricmp(cmd, "wave5") == 0)
 		Cmd_Wave5_f(ent);
-	else if (Q_stricmp(cmd, "infinitewaves") == 0)
+	else if (Q_stricmp(cmd, "infinite") == 0)
 		Cmd_InfiniteWaves_f(ent);
 	else if (Q_stricmp(cmd, "invinc") == 0)
 		Cmd_GiveInv_f(ent);
-	else if (Q_stricmp(cmd, "nuke") == 0)
-		Cmd_GiveNuke_f(ent);
+	else if (Q_stricmp(cmd, "reverse") == 0)
+		Cmd_GiveReverse_f(ent);
+	else if (Q_stricmp(cmd, "revnow") == 0)
+		Cmd_GiveRevNow_f(ent);
 	else if (Q_stricmp(cmd, "regen") == 0)
 		Cmd_GiveRegen_f(ent);
 	else if (Q_stricmp(cmd, "insta") == 0)
 		Cmd_GiveInstaKill_f(ent);
 	else if (Q_stricmp(cmd, "atkspd") == 0)
 		Cmd_GiveAtkSpd_f(ent);
+	else if (Q_stricmp(cmd, "atkspdnow") == 0)
+		Cmd_GiveAtkSpdNow_f(ent);
     else if (Q_stricmp (cmd, "hud") == 0) //cmd for hud toggle
         Cmd_ToggleHud (ent);
     //end

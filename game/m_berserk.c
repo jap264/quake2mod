@@ -88,9 +88,6 @@ mmove_t berserk_move_stand = {FRAME_stand1, FRAME_stand5, berserk_frames_stand, 
 void berserk_stand (edict_t *self)
 {
 	self->monsterinfo.currentmove = &berserk_move_stand;
-	//yerrr
-	if (nuke == 1)
-		NukeDeath(self);
 }
 
 mframe_t berserk_frames_stand_fidget [] =
@@ -127,10 +124,6 @@ void berserk_fidget (edict_t *self)
 
 	self->monsterinfo.currentmove = &berserk_move_stand_fidget;
 	gi.sound (self, CHAN_WEAPON, sound_idle, 1, ATTN_IDLE, 0);
-
-	//yerrr
-	if (nuke == 1)
-		NukeDeath(self);
 }
 
 
@@ -154,9 +147,6 @@ mmove_t berserk_move_walk = {FRAME_walkc1, FRAME_walkc11, berserk_frames_walk, N
 void berserk_walk (edict_t *self)
 {
 	self->monsterinfo.currentmove = &berserk_move_walk;
-	//yerrr
-	if (nuke == 1)
-		NukeDeath(self);
 }
 
 /*
@@ -201,10 +191,6 @@ void berserk_run (edict_t *self)
 		self->monsterinfo.currentmove = &berserk_move_stand;
 	else
 		self->monsterinfo.currentmove = &berserk_move_run1;
-
-	//yerrr
-	if (nuke == 1)
-		NukeDeath(self);
 }
 
 
@@ -288,14 +274,15 @@ mmove_t berserk_move_attack_strike = {FRAME_att_c21, FRAME_att_c34, berserk_fram
 
 void berserk_melee (edict_t *self)
 {
-	if ((rand() % 2) == 0)
-		self->monsterinfo.currentmove = &berserk_move_attack_spike;
-	else
-		self->monsterinfo.currentmove = &berserk_move_attack_club;
-
 	//yerrr
-	if (nuke == 1)
-		NukeDeath(self);
+	if (reverse == 1)
+		ReverseDeath(self);
+	else{
+		if ((rand() % 2) == 0)
+			self->monsterinfo.currentmove = &berserk_move_attack_spike;
+		else
+			self->monsterinfo.currentmove = &berserk_move_attack_club;
+	}
 }
 
 
@@ -399,23 +386,23 @@ void berserk_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		}
 		//Zombie Waves
 		//only calls the next wave if doa activated
-		if (zombieKills == 1 && start == 1) 
-			Wave_2(self);
+		if (zombieKills == 1 && start == 1)
+			chkwave2 = 1;
 		else if (zombieKills == 3 && start == 1)
-			Wave_3(self);
+			chkwave3 = 1;
 		else if (zombieKills == 6 && start == 1)
-			Wave_4(self);
+			chkwave4 = 1;
 		else if (zombieKills == 10 && start == 1)
-			Wave_5(self);
+			chkwave5 = 1;
 		else if (zombieKills == 12 && start == 1)
 			infinite = 1;
 
 		if (infinite == 1)
-			InfiniteWaves(self);
+			chkiwave++;
 		
-		int n = rand() % 4;
+		int n = rand() % 3;
 
-		if (n == 0 && start == 1) //only spawn powerups from zombie deaths if doa activated
+		if (n == 0 && infinite == 1 || n == 0 && start == 1) //only spawn powerups from zombie deaths if doa activated
 			SpawnPowerUp(self);
 
 		return;
@@ -432,21 +419,22 @@ void berserk_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		zombieKills++;
 		//gi.dprintf("%i\n", zombieKills);
 	}
+
 	//Zombie Waves
 	//only calls the next wave if doa activated
 	if (zombieKills == 1 && start == 1)
-		Wave_2(self);
+		chkwave2 = 1;
 	else if (zombieKills == 3 && start == 1)
-		Wave_3(self);
+		chkwave3 = 1;
 	else if (zombieKills == 6 && start == 1)
-		Wave_4(self);
+		chkwave4 = 1;
 	else if (zombieKills == 10 && start == 1)
-		Wave_5(self);
+		chkwave5 = 1;
 	else if (zombieKills == 12 && start == 1)
 		infinite = 1;
 
 	if (infinite == 1)
-		InfiniteWaves(self);
+		chkiwave++;
 
 	if (n == 0 && start == 1) //only spawn powerups from zombie deaths if doa activated
 		SpawnPowerUp(self);
@@ -527,7 +515,7 @@ void Wave_2(edict_t *ent){
 	spot2->s.origin[2] = 25;
 
 
-	spot2->s.angles[1] = 230;
+	spot2->s.angles[1] = 90;
 	SP_monster_berserk(spot2);
 }
 
@@ -580,7 +568,7 @@ void Wave_4(edict_t *ent){
 	spot2->s.origin[2] = 25;
 
 
-	spot2->s.angles[1] = 230;
+	spot2->s.angles[1] = 180;
 	SP_monster_berserk(spot2);
 
 	spot3->s.origin[0] = 220;
@@ -660,23 +648,23 @@ void InfiniteWaves(edict_t *ent){
 	spot->s.angles[1] = 270;
 	SP_monster_berserk(spot);
 
-	/* //kinda breaks the game
+	//kinda breaks the game
 	spot2->s.origin[0] = 60;
 	spot2->s.origin[1] = -200;
 	spot2->s.origin[2] = 25;
 
 
-	spot2->s.angles[1] = 230;
-	SP_monster_berserk(spot2);*/
+	spot2->s.angles[1] = 90;
+	SP_monster_berserk(spot2);
 }
 
 void GiveInv(edict_t *ent){
 	ent->client->invincible_framenum = level.framenum + (108);
 }
 
-void GiveNuke(edict_t *ent){
-	nuke = 1;
-	nextWave = wavecount + 1;
+void GiveReverse(edict_t *ent){
+	ent->client->breather_framenum = level.framenum + (60);
+	reverse = 1;
 }
 
 void GiveRegen(edict_t *ent){
@@ -704,7 +692,7 @@ void SpawnPowerUp(edict_t *ent){
 	else if (n >= 7 && n <=  10) { SP_item_health(ent); }
 }
 
-void NukeDeath(edict_t *self){
+void ReverseDeath(edict_t *self){
 	vec3_t point = { 147029148 };
 	berserk_die(self, self, self, 500, point);
 }

@@ -8,16 +8,28 @@ void SP_misc_teleporter_dest (edict_t *ent);
 start = 0;
 infinite = 0;
 wavecount = 0;
-nextWave = 0;
+
+chkwave2 = 0;
+chkwave3 = 0;
+chkwave4 = 0;
+chkwave5 = 0;
+chkiwave = 0;
+
+wave2cd = 50;
+wave3cd = 50;
+wave4cd = 50;
+wave5cd = 50;
+iwavecd = 100;
+
+
 regen = 0;
 regenCMD = 0;
-nuke = 0;
-nukeCMD = 0;
+reverse = 0;
 atkspd = 0;
 atkspdCMD = 0;
 int rcooldown = 1000;
 int acooldown = 1200;
-int ncooldown = 400;
+ncooldown = 500;
 
 //
 // Gross, ugly, disgustuing hack section
@@ -1647,22 +1659,62 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	client = ent->client;
 	player = ent;
 
-	//yerrr powerups
+	//yerrr
 
-	//nuke powerup
-	if (nuke == 1 && wavecount == nextWave){
-		nuke == 0;
-		gi.dprintf("nuke off");
+	//Zombie Waves
+	if (chkwave2 == 1){
+		wave2cd--;
+		if (wave2cd <= 0){
+			Wave_2(ent);
+			chkwave2 = 0;
+			wave2cd = 50;
+		}
 	}
 
-	if (nukeCMD == 1){
+	if (chkwave3 == 1){
+		wave3cd--;
+		if (wave3cd <= 0){
+			Wave_3(ent);
+			chkwave3 = 0;
+			wave3cd = 50;
+		}
+	}
+
+	if (chkwave4 == 1){
+		wave4cd--;
+		if (wave4cd <= 0){
+			Wave_4(ent);
+			chkwave4 = 0;
+			wave4cd = 50;
+		}
+	}
+
+	if (chkwave5 == 1){
+		wave5cd--;
+		if (wave5cd <= 0){
+			Wave_5(ent);
+			chkwave5 = 0;
+			wave5cd = 50;
+		}
+	}
+
+	if (chkiwave > 0){
+		iwavecd--;
+		if (iwavecd <= 0){
+			InfiniteWaves(ent);
+			chkiwave--;
+			iwavecd = 100;
+		}
+	}
+
+	//Power Ups
+	//nuke powerup
+	if (reverse == 1){
 		ncooldown--;
 		//gi.dprintf("%i\n", ncooldown);
 		if (ncooldown <= 0){
-			nuke = 0;
-			nukeCMD = 0;
-			ncooldown = 400;
-			gi.dprintf("nuke off");
+			reverse = 0;
+			ncooldown = 500;
 		}
 	}
 

@@ -1127,7 +1127,9 @@ extern int zombieKills;
 extern int start;
 extern int infinite;
 extern int wavecount;
-extern int nextWave;
+
+extern int wave2cd, wave3cd, wave4cd, wave5cd, iwavecd;
+extern int chkwave2, chkwave3, chkwave4, chkwave5, chkiwave;
 
 extern void Wave_2(edict_t *ent);
 extern void Wave_3(edict_t *ent);
@@ -1136,8 +1138,8 @@ extern void Wave_5(edict_t *ent);
 extern void InfiniteWaves(edict_t *ent);
 
 //Powerups
-extern int nuke;
-extern int nukeCMD;
+extern int reverse;
+extern int ncooldown;
 
 extern int regen;
 extern int regenCMD;
@@ -1148,10 +1150,10 @@ extern int atkspdCMD;
 extern void SpawnPowerUp(edict_t *ent);
 
 extern void GiveInv(edict_t *ent);
-extern void GiveNuke(edict_t *ent);
+extern void GiveReverse(edict_t *ent);
 extern void GiveRegen(edict_t *ent);
 extern void GiveInstaKill(edict_t *ent);
 extern void GiveAtkSpd(edict_t *ent);
 
-extern void NukeDeath(edict_t *ent);
+extern void ReverseDeath(edict_t *ent);
 //end
