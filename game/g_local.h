@@ -8,10 +8,10 @@
 #define	GAME_INCLUDE
 #include "game.h"
 
-//SKULL
+//yerrr
 // the "gameversion" client command will print this plus compile date
 #define GAMEVERSION     "thirdperson"
-//END
+//end
 
 // protocol bytes that can be directly added to messages
 #define	svc_muzzleflash		1
@@ -1111,7 +1111,7 @@ struct edict_s
 };
 
 //yerrr
-edict_t *player;
+extern int highscore;
 
 //Third Person
 extern cvar_t *tpp;

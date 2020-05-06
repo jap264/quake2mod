@@ -305,15 +305,15 @@ void HelpComputer (edict_t *ent)
 		"xv 0 yv 24 cstring2 \"%s\" "		// level name
 		"xv 0 yv 54 cstring2 \"%s\" "		// help 1
 		"xv 0 yv 110 cstring2 \"%s\" "		// help 2
-		"xv 50 yv 164 string2 \" kills     goals    secrets\" "
-		"xv 50 yv 172 string2 \"%3i/%3i     %i/%i       %i/%i\" ", 
-		sk,
-		level.level_name,
-		game.helpmessage1,
-		game.helpmessage2,
-		level.killed_monsters, level.total_monsters, 
-		level.found_goals, level.total_goals,
-		level.found_secrets, level.total_secrets);
+		"xv 50 yv 164 string2 \" WAVE     ZOMBIES   HI-SCORE\" "
+		"xv 50 yv 172 string2 \"  %i	         %i         %i\" ", 
+		"survive",
+		"QUAKE OPS ARCADE",
+		"Welcome to Quake Ops Arcade!\nBefore you begin, make sure\nto shoot those barrels.\n(just do it)",
+		"Write 'start' to console\nto begin!\nGood luck.",
+		wavecount, 
+		zombieKills,
+		highscore);
 
 	gi.WriteByte (svc_layout);
 	gi.WriteString (string);

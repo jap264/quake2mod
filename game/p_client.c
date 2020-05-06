@@ -1,5 +1,6 @@
 #include "g_local.h"
 #include "m_player.h"
+#include <stdio.h>
 
 void ClientUserinfoChanged (edict_t *ent, char *userinfo);
 
@@ -8,6 +9,7 @@ void SP_misc_teleporter_dest (edict_t *ent);
 start = 0;
 infinite = 0;
 wavecount = 0;
+highscore = 0;
 
 chkwave2 = 0;
 chkwave3 = 0;
@@ -510,6 +512,9 @@ void player_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damag
 	int		n;
 
         //yerrr
+		//gi.dprintf("%i", zombieKills);
+		//SaveHS();
+
         if (self->client->chasetoggle)
         {
                 ChasecamRemove (self, "off");
@@ -1657,9 +1662,16 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 
 	level.current_entity = ent;
 	client = ent->client;
-	player = ent;
 
 	//yerrr
+	
+	//FILES
+	FILE *rFile;
+
+	rFile = fopen("highscores.txt", "r");
+
+	fscanf(rFile, "%d", &highscore);
+	fclose(rFile);
 
 	//Zombie Waves
 	if (chkwave2 == 1){

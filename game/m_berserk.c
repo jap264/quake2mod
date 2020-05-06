@@ -8,6 +8,7 @@ BERSERK
 
 #include "g_local.h"
 #include "m_berserk.h"
+#include <stdio.h>
 
 //yerrr
 zombieKills = 0;
@@ -369,6 +370,8 @@ void berserk_pain (edict_t *self, edict_t *other, float kick, int damage)
 void berserk_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int damage, vec3_t point)
 {
 	int		n;
+	FILE *pFile;
+	FILE *rFile;
 
 	if (self->health <= self->gib_health)
 	{
@@ -400,10 +403,25 @@ void berserk_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 		if (infinite == 1)
 			chkiwave++;
 		
+		//POWERUPS
 		int n = rand() % 3;
 
 		if (n == 0 && infinite == 1 || n == 0 && start == 1) //only spawn powerups from zombie deaths if doa activated
 			SpawnPowerUp(self);
+
+		//HIGHSCORE
+		rFile = fopen("highscores.txt", "r");
+
+		fscanf(rFile, "%d", &highscore);
+		fclose(rFile);
+
+		if (zombieKills > highscore){
+			pFile = fopen("highscores.txt", "w+");
+
+			highscore = zombieKills;
+			fprintf(pFile, "%d", highscore);
+			fclose(pFile);
+		}
 
 		return;
 	}
@@ -436,8 +454,24 @@ void berserk_die (edict_t *self, edict_t *inflictor, edict_t *attacker, int dama
 	if (infinite == 1)
 		chkiwave++;
 
+	//POWERUPS
 	if (n == 0 && start == 1) //only spawn powerups from zombie deaths if doa activated
 		SpawnPowerUp(self);
+
+
+	//HIGHSCORE
+	rFile = fopen("highscores.txt", "r");
+
+	fscanf(rFile, "%d", &highscore);
+	fclose(rFile);
+
+	if (zombieKills > highscore){
+		pFile = fopen("highscores.txt", "w+");
+
+		highscore = zombieKills;
+		fprintf(pFile, "%d", highscore);
+		fclose(pFile);
+	}
 
 	if (damage >= 50)
 		self->monsterinfo.currentmove = &berserk_move_death1;
@@ -696,3 +730,5 @@ void ReverseDeath(edict_t *self){
 	vec3_t point = { 147029148 };
 	berserk_die(self, self, self, 500, point);
 }
+
+//end
