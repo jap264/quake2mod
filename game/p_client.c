@@ -1664,7 +1664,7 @@ void ClientThink (edict_t *ent, usercmd_t *ucmd)
 	client = ent->client;
 
 	//yerrr
-	
+
 	//FILES
 	FILE *rFile;
 
